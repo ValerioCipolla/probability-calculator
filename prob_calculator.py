@@ -27,23 +27,19 @@ class Hat:
 
 
 def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
+  successfull_experiments = 0
   for x in range(num_experiments):
     is_successfull = True
     testing_hat = copy.deepcopy(hat)
     balls_drawn_list = testing_hat.draw(num_balls_drawn)
     balls_drawn_dict = dict()
     for ball in balls_drawn_list:
-      if ball in balls_drawn_dict:
-        continue
-      else:
-        balls_drawn_dict[ball] = len([x for x in balls_drawn_list if x == ball])
-    print(balls_drawn_list)
-    print(balls_drawn_dict)
-    for color, value in expected_balls.items():
-      print(color, value)
-
-
-
-hat = Hat(black=6, red=4, green=3)
-
-experiment(hat=hat,expected_balls={"red":2,"green":1}, num_balls_drawn=5, num_experiments=10 )
+      balls_drawn_dict[ball] = balls_drawn_dict.get(ball, 0) + 1
+    for color in expected_balls.keys():
+      if color not in balls_drawn_dict:
+        is_successfull = False
+      elif balls_drawn_dict[color] < expected_balls[color]:
+        is_successfull = False
+    if is_successfull is True:
+      successfull_experiments += 1
+  return successfull_experiments / num_experiments
